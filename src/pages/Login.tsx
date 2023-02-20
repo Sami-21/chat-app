@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,6 +14,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/auth/AuthActions";
 
 function Copyright(props: any) {
   return (
@@ -36,6 +38,8 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function Login() {
+  const auth = useSelector((state) => state);
+  const dispatch = useDispatch();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -51,7 +55,15 @@ export default function Login() {
         })
         .then((res) => {
           resolve(res);
-          console.log(res);
+          console.log(res.data);
+          const { user, authorisation } = res.data;
+          dispatch(
+            login({
+              user: { name: user.name, email: user.email },
+              token: authorisation.token,
+            })
+          );
+          console.log(auth);
 
           redirect("/chat");
         })
@@ -61,6 +73,12 @@ export default function Login() {
         });
     });
   };
+
+  useEffect(() => {
+    console.log(auth);
+
+    return () => {};
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
