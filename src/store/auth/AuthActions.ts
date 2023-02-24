@@ -1,8 +1,8 @@
 import { createAction } from "@reduxjs/toolkit";
-import { authInitialState } from "../../interfaces/authInitialState";
+import { authInitialState } from "./interfaces/authInitialState";
 
-export const login = createAction<authInitialState>('LOGIN')
+export const login = createAction<authInitialState>("login");
 
-export const logout = createAction('LOGOUT')
+export const logout = createAction("logout");
 
-export const refresh = createAction<authInitialState>('REFRESH')
+export const refresh = createAction<authInitialState>("refresh");

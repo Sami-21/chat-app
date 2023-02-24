@@ -67,7 +67,7 @@ const Chat: React.FC = () => {
 
   return (
     <>
-      {/* <Card sx={{ maxWidth: 450, height: "fit-content" }}>
+      <Card sx={{ maxWidth: 450, height: "fit-content" }}>
         <CardActions>
           <TextField
             id="outlined-basic"
@@ -101,7 +101,7 @@ const Chat: React.FC = () => {
             <SendIcon color="primary" />
           </IconButton>
         </CardActions>
-      </Card> */}
+      </Card>
     </>
   );
 };

@@ -5,7 +5,8 @@ import "./index.css";
 import "./styles/scss/style.css";
 import { router } from "./router";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { persistor, store } from "./store";
+import { PersistGate } from "redux-persist/integration/react";
 
 declare global {
   interface Window {
@@ -17,7 +18,9 @@ declare global {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <PersistGate loading={null} persistor={persistor}>
+      <RouterProvider router={router} />
+    </PersistGate>
   </Provider>
   // </React.StrictMode>
 );

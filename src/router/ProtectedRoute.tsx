@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-
+import { useAppSelector } from "../store/hooks";
 export const ProtectedRoute = ({ children }: any) => {
-  // const { user }: any = useAuth();
-  // if (!user) {
-  //   // user is not authenticated
-  //   return <Navigate to="/" />;
-  // }
+  const { token }: any = useAppSelector((state) => state);
+  if (!token) {
+    // user is not authenticated
+    return <Navigate to="/" />;
+  }
   return children;
 };

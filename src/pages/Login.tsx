@@ -13,9 +13,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import { redirect } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/auth/AuthActions";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { login } from "../store/auth/AuthSlice";
 
 function Copyright(props: any) {
   return (
@@ -27,7 +27,7 @@ function Copyright(props: any) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Chat App
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -38,47 +38,34 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function Login() {
-  const auth = useSelector((state) => state);
-  const dispatch = useDispatch();
+  const auth = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    new Promise((resolve, reject) => {
-      axios
-        .post("http://localhost:8000/api/login", {
-          email: data.get("email"),
-          password: data.get("password"),
+    try {
+      const data = new FormData(event.currentTarget);
+      const res = await axios.post("http://localhost:8000/api/login", {
+        email: data.get("email"),
+        password: data.get("password"),
+      });
+      const { user, authorisation } = res.data;
+      dispatch(
+        login({
+          user: { name: user.name, email: user.email },
+          token: authorisation.token,
         })
-        .then((res) => {
-          resolve(res);
-          console.log(res.data);
-          const { user, authorisation } = res.data;
-          dispatch(
-            login({
-              user: { name: user.name, email: user.email },
-              token: authorisation.token,
-            })
-          );
-          console.log(auth);
-
-          redirect("/chat");
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
+      );
+      navigate("/chat");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    console.log(auth);
-
+    auth ? navigate("/chat") : null;
     return () => {};
-  }, []);
+  }, [auth]);
 
   return (
     <ThemeProvider theme={theme}>
