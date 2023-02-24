@@ -5,7 +5,8 @@
     height: 400px;
     overflow-y: scroll;
     .message {
-        max-width: 75px;
+        max-width: fit-content;
+        word-wrap: break-word;
         height: fit-content;
         padding-block: 10px;
     }

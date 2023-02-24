@@ -4,7 +4,7 @@ import { authInitialState } from "./interfaces/authInitialState";
 
 export const authSlice = createSlice({
   name: "auth",
-  initialState: initialState,
+  initialState,
   reducers: {
     login(state, action: PayloadAction<authInitialState>) {
       state.user = action.payload.user;

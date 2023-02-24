@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { login } from "../store/auth/AuthSlice";
+import { login } from "../store/auth/AuthActions";
 
 function Copyright(props: any) {
   return (
@@ -38,13 +38,18 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function Login() {
-  const auth = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const data = new FormData(event.currentTarget);
+      const cookie = await axios.get(
+        "http://localhost:8000/sanctum/csrf-cookie"
+      );
+      console.log("====================================");
+      console.log(cookie);
+      console.log("====================================");
       const res = await axios.post("http://localhost:8000/api/login", {
         email: data.get("email"),
         password: data.get("password"),
@@ -52,7 +57,7 @@ export default function Login() {
       const { user, authorisation } = res.data;
       dispatch(
         login({
-          user: { name: user.name, email: user.email },
+          user: user,
           token: authorisation.token,
         })
       );
@@ -63,9 +68,8 @@ export default function Login() {
   };
 
   useEffect(() => {
-    auth ? navigate("/chat") : null;
     return () => {};
-  }, [auth]);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
